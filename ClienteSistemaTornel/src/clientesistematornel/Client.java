@@ -39,6 +39,7 @@ import sistematornel.ui.Menu;
  */
 public class Client extends FileTransportBase {
 
+    //hola mi amor
     public interface OnLoginListener {
 
         public void onLogin(UsuarioRegistro usuarioRegistro);
