@@ -41,7 +41,7 @@ public class Client extends FileTransportBase {
 
     //hola mi amor
     public interface OnLoginListener {
-
+       // wow ... eres un genio por eso te amo <3
         public void onLogin(UsuarioRegistro usuarioRegistro);
     }
 
