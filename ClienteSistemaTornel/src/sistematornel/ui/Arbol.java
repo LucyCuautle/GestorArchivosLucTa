@@ -50,7 +50,7 @@ import static sistematornel.ui.Login.IP;
 import utils.Utils;
 
 public class Arbol extends javax.swing.JFrame {
-
+    // hola mi vida te hablo desde tornel te amoooo 
     /**
      * Creates new form Arbol2
      */
