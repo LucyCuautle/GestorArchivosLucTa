@@ -125,7 +125,7 @@ public class Utils {
     }
 
     public static boolean validarNumeros(String texto) {
-        Pattern pat = Pattern.compile("[0-9]{1,}");
+        Pattern pat = Pattern.compile("[0-9\\.]{1,}");
         
         Matcher mat = pat.matcher(texto);
         if (mat.matches()) {
