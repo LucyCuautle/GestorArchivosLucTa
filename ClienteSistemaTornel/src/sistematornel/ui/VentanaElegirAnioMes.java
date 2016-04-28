@@ -10,7 +10,7 @@ import clientesistematornel.Util;
 import entitys.Accion;
 import entitys.Archivo;
 import static sistematornel.ui.Login.IP;
-import utils.Utils;
+import utils.Utils;import utils.Singleton;
 
 /**
  *
@@ -125,7 +125,7 @@ public class VentanaElegirAnioMes extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(12);
 
         accion.setObject(jComboBox1.getSelectedItem()+","+jComboBox2.getSelectedItem());

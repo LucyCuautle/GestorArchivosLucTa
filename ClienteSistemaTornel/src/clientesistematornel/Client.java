@@ -30,6 +30,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import sistematornel.ui.Menu;
+import utils.Singleton;
 
 /**
  * Clase cliente
@@ -274,6 +275,7 @@ public class Client extends FileTransportBase {
             this.ft.setNumeroTarjeta(numeroTarjeta);
             this.ft.setFecha(Util.getFecha());
             this.ft.setHora(Util.getHora());
+            this.ft.setPlanta(Singleton.getInstance().getPlanta());
 
             addMessage("Subiendo archivo...");
 

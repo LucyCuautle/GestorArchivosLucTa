@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import entitys.UsuarioRegistro;
 import javax.swing.DefaultListModel;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 
 /**
  *
@@ -225,7 +226,7 @@ public class Registrar extends javax.swing.JFrame {
         usuarioRegistro.setApellidoMaterno(jTextField3.getText().toString());
         usuarioRegistro.setEmail(jTextField4.getText().toString());
         
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(8);
         accion.setSubAccion(subAccion);
         accion.setObject(usuarioRegistro);

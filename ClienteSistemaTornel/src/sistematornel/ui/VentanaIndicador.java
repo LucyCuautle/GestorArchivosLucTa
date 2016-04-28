@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 
 /**
  *
@@ -209,7 +210,7 @@ public class VentanaIndicador extends javax.swing.JFrame implements ChangeListen
 
         indicador.setTarget(jTextField2.getText().toString());
 
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(6);
         accion.setSubAccion(subAccion);
         accion.setObject(indicador);

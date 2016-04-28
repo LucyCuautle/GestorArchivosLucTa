@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 
 public class ConexionBD {
       
-    public static Connection GetConnection()
+    public static Connection GetConnection(String planta)
     {
         Connection conexion=null;
       
@@ -24,9 +24,8 @@ public class ConexionBD {
             String usuarioDB="root";
             String passwordDB="root";
             conexion= DriverManager.getConnection(servidor,usuarioDB,passwordDB);*/
-            
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String connectionUrl = "jdbc:sqlserver://;database=direcciontornel;integratedSecurity=true;";
+            String connectionUrl = "jdbc:sqlserver://;database=direcciontornel"+planta+";integratedSecurity=true;";
             conexion =  DriverManager.getConnection(connectionUrl);
             
         }

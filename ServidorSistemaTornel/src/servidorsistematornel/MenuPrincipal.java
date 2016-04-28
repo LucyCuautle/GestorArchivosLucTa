@@ -81,7 +81,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         
         server = new Server(Utils.PORT, getRoot().getAbsolutePath());
         
-        server.obtenerMatrizCompleta();
+        //server.obtenerMatrizCompleta();
 
         jLabel1.setText(server.getPath());
 

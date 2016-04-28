@@ -20,6 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 
 /**
  *
@@ -66,7 +67,7 @@ public class RegistroProceso extends javax.swing.JFrame {
         //jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         setModel();
 
-        Accion accionProceso = new Accion();
+        Accion accionProceso = new Accion(Singleton.getInstance().getPlanta());;
         accionProceso.setAccion(5);
 
         Client clienteProceso = new Client(IP, Util.PORT, 3, accionProceso);//192.168.1.72
@@ -117,7 +118,7 @@ public class RegistroProceso extends javax.swing.JFrame {
     }
 
     private void getIndicadores(Proceso proceso) {
-        Accion accionIndicador = new Accion();
+        Accion accionIndicador = new Accion(Singleton.getInstance().getPlanta());;
         accionIndicador.setAccion(6);
         accionIndicador.setObject(proceso);
         Client clienteIndicador = new Client(IP, Util.PORT, 3, accionIndicador);//192.168.1.72

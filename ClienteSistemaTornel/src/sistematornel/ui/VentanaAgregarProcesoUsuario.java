@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 
 /**
  *
@@ -51,7 +52,7 @@ public class VentanaAgregarProcesoUsuario extends javax.swing.JFrame {
     }
 
     private void getProcesos() {
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(5);
 
         Client cliente = new Client(IP, Util.PORT, 3, accion);//192.168.1.72
@@ -77,8 +78,9 @@ public class VentanaAgregarProcesoUsuario extends javax.swing.JFrame {
         UsuarioProceso usuarioProceso = new UsuarioProceso();
         usuarioProceso.setUsuarioRegistro(usuarioRegistro);
         usuarioProceso.setProceso(proceso);
+        //usuarioProceso.setPlanta(Singleton.getInstance().getPlanta());
 
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(10);
         accion.setObject(usuarioProceso);
         Client c = new Client(IP, Util.PORT, 3, accion);//192.168.1.72

@@ -16,6 +16,7 @@ public class Singleton {
     private static Singleton singleton = null;
     
     private UsuarioRegistro usuarioRegistro;
+    private String planta;
     
     public static Singleton getInstance(){
         
@@ -35,6 +36,12 @@ public class Singleton {
         this.usuarioRegistro = usuarioRegistro;
     }
     
+    public String getPlanta(){
+        return planta;
+    }
     
+    public void setPlanta(String planta){
+        this.planta = planta;
+    }
     
 }

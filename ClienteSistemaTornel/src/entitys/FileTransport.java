@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class FileTransport extends Object implements Serializable {
 
     private static final long serialVersionUID = 8458553842346689548L;
+    private String planta;
     private String name;
     private String proceso;
     private String numeroTarjeta;
@@ -17,6 +18,14 @@ public class FileTransport extends Object implements Serializable {
     private String hora;
     private byte[] filearray;
     private Archivo archivo;
+    
+    public String getPlanta(){
+        return planta;
+    }
+    
+    public void setPlanta(String planta){
+        this.planta = planta;
+    }
 
     public String getName() {
         return name;

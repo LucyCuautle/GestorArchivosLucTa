@@ -24,6 +24,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 
 /**
  *
@@ -90,7 +91,7 @@ public class RegistroUsuario extends javax.swing.JFrame {
         //jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
        
 
-        Accion accionProceso = new Accion();
+        Accion accionProceso = new Accion(Singleton.getInstance().getPlanta());;
         accionProceso.setAccion(8);
 
         Client clienteUsuario = new Client(IP, Util.PORT, 3, accionProceso);//192.168.1.72
@@ -140,7 +141,7 @@ public class RegistroUsuario extends javax.swing.JFrame {
     }
 
     private void getProcesos(UsuarioRegistro usuarioRegistro) {
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(5);
         accion.setObject(usuarioRegistro);
         Client cliente = new Client(IP, Util.PORT, 3, accion);//192.168.1.72
@@ -166,9 +167,10 @@ public class RegistroUsuario extends javax.swing.JFrame {
 
     private void getIndicadores(UsuarioRegistro usuario, Proceso proceso) {
         UsuarioProceso usuarioProceso = new UsuarioProceso();
+        //usuarioProceso.setPlanta(Singleton.getInstance().getPlanta());
         usuarioProceso.setUsuarioRegistro(usuario);
         usuarioProceso.setProceso(proceso);
-        Accion accionIndicador = new Accion();
+        Accion accionIndicador = new Accion(Singleton.getInstance().getPlanta());;
         accionIndicador.setAccion(6);
         accionIndicador.setObject(usuarioProceso);
         Client clienteIndicador = new Client(IP, Util.PORT, 3, accionIndicador);//192.168.1.72
@@ -452,7 +454,7 @@ public class RegistroUsuario extends javax.swing.JFrame {
                     ipu.setUsuarioRegistro(usuarios.get(usuarioSeleccionado));
                     ipu.setProceso(procesos.get(procesoSeleccionado));
                     ipu.setIndicador(indicadores.get(indicadorSeleccionado));
-
+                    
                     VentanaEliminarIndicadorProcesoUsuario veipu = new VentanaEliminarIndicadorProcesoUsuario(ipu);
                     veipu.setVisible(true);
                     setVisible(true);

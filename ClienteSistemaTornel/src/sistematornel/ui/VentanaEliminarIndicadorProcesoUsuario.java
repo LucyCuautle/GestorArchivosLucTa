@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 
 /**
  *
@@ -97,7 +98,7 @@ public class VentanaEliminarIndicadorProcesoUsuario extends javax.swing.JFrame {
         int opcion = JOptionPane.showConfirmDialog(null, "Al eliminar este indicador se borrara toda relacion con el proceso y el usuario seleccionado", "Advertencia", JOptionPane.WARNING_MESSAGE);
 
         if (opcion == JOptionPane.YES_OPTION) {
-            Accion accion = new Accion();
+            Accion accion = new Accion(Singleton.getInstance().getPlanta());;
             accion.setAccion(6);
             accion.setSubAccion(3);
             accion.setObject(ipu);

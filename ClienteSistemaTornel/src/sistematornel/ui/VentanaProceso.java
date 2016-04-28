@@ -11,6 +11,7 @@ import entitys.Accion;
 import entitys.Proceso;
 import javax.swing.JOptionPane;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 
 /**
  *
@@ -123,7 +124,7 @@ public class VentanaProceso extends javax.swing.JFrame {
 
         proceso.setNombre(jTextField1.getText().toString());
 
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(5);
         accion.setSubAccion(subAccion);
         accion.setObject(proceso);

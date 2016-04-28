@@ -12,9 +12,17 @@ import java.io.Serializable;
  * @author Tadeo-developer
  */
 public abstract class Usuario extends Object implements Serializable{
+    private String planta;
     private String numeroTarjeta;
     private String contrasenia;
 
+    public String getPlanta(){
+        return planta;
+    }
+    
+    public void setPlanta(String planta){
+        this.planta = planta;
+    }
     public String getNumeroTarjeta() {
         return numeroTarjeta;
     }

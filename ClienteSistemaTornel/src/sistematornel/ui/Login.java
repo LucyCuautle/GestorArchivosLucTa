@@ -34,12 +34,13 @@ import utils.Utils;
 
 public class Login extends javax.swing.JFrame implements MouseListener {
 
-    public static String IP = "localhost";//172.18.1.2
+    public static String IP = "172.18.1.2";//172.18.1.2
+    String planta;
 
     public Login() {
 
         initComponents();
-setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
         //getContentPane().setBackground(Colores.AZUL);
         /*jButton1.setBackground(Colores.CREMA);
          jButton1.setOpaque(true);
@@ -119,6 +120,7 @@ setLocationRelativeTo(null);
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -149,6 +151,8 @@ setLocationRelativeTo(null);
             }
         });
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Planta 2", "Planta 4", "Planta 5", " " }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -169,7 +173,8 @@ setLocationRelativeTo(null);
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
                                 .addComponent(jLabel2))
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -185,9 +190,11 @@ setLocationRelativeTo(null);
                 .addComponent(jLabel3)
                 .addGap(18, 18, 18)
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addContainerGap())
         );
@@ -203,24 +210,38 @@ setLocationRelativeTo(null);
         String userText = jTextField1.getText();
         String contrasenia = jTextField1.getText();
 
-        if (Utils.validarNumeros(userText)) {
+        int pos = jComboBox1.getSelectedIndex();
+
+        if (pos == 0) {
+            JOptionPane.showMessageDialog(null, "Seleccione una planta");
+        } else if (Utils.validarNumeros(userText)) {
             final UsuarioLogin usuario = new UsuarioLogin();
+
             usuario.setNumeroTarjeta(jTextField1.getText());
             usuario.setContrasenia(jPasswordField1.getText());
+            
+            if(pos == 1){
+                planta = "_p2";
+            }else if(pos == 2){
+                planta = "_p4";
+            }else if(pos == 3){
+                planta = "_p5";
+            }
+            usuario.setPlanta(planta);
             Client cliente = new Client(IP, Util.PORT, 1, usuario);//192.168.1.72
 
             cliente.setOnLoginListener(new Client.OnLoginListener() {
 
                 @Override
                 public void onLogin(UsuarioRegistro usuarioRegistro) {
-                    
+
                     if (usuarioRegistro != null) {
-                    System.out.println("usuarioRegistro nombre: "+usuarioRegistro.getNombre());
-                    System.out.println("usuarioRegistro cont: "+usuarioRegistro.getContrasenia());
-                        System.out.println("usuarioRegistro existe cont: "+usuarioRegistro.getContrasenia());
+                        System.out.println("usuarioRegistro nombre: " + usuarioRegistro.getNombre());
+                        System.out.println("usuarioRegistro cont: " + usuarioRegistro.getContrasenia());
+                        System.out.println("usuarioRegistro existe cont: " + usuarioRegistro.getContrasenia());
                         if (usuarioRegistro.getContrasenia() != null) {
 
-                            System.out.println("iniciando sesion: "+usuarioRegistro.getContrasenia());
+                            System.out.println("iniciando sesion: " + usuarioRegistro.getContrasenia());
                             if (usuarioRegistro.getContrasenia().equals("111111")) {
                                 System.out.println("contraseña es 111111");
                                 String contrasenia = JOptionPane.showInputDialog("Ingrese nueva contraseña");
@@ -229,7 +250,7 @@ setLocationRelativeTo(null);
                                 if (contrasenia.equals(contraseniaRepetida)) {
                                     usuarioRegistro.setContrasenia(contrasenia);
 
-                                    Accion accion = new Accion();
+                                    Accion accion = new Accion(planta);
                                     accion.setAccion(7);
                                     accion.setObject(usuarioRegistro);
 
@@ -262,12 +283,13 @@ setLocationRelativeTo(null);
                                 JOptionPane.showMessageDialog(null, "Bienvenido " + usuarioRegistro.getNombre());
 
                                 Singleton.getInstance().setUsuarioRegistro(usuarioRegistro);
+                                Singleton.getInstance().setPlanta(planta);
 
                                 Menu menu = new Menu();
                                 menu.setVisible(true);
                                 setVisible(false);
                             }
-                        }else{
+                        } else {
                             JOptionPane.showMessageDialog(null, "Error al cambiar contraseña");
                         }
 
@@ -281,14 +303,12 @@ setLocationRelativeTo(null);
             hilo.start();
         } else {
             JOptionPane.showMessageDialog(null, "El numero de tarjeta deben ser unicamente numeros");
-        }
-
-        //buscarUsuario(jTextField1.getText(), jPasswordField1.getText());
+        } //buscarUsuario(jTextField1.getText(), jPasswordField1.getText());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /*public void buscarUsuario(String usuario, String contrasenia) {
         
-     Connection conexion = ConexionBD.GetConnection();
+     Connection conexion = ConexionBD.GetConnection(planta);
      Statement st;
      ResultSet rs;
      String sql = "select * from Usuario where id_usuario = " + usuario + " and contrasenia = " + "'" + contrasenia + "'";
@@ -311,10 +331,10 @@ setLocationRelativeTo(null);
      }
         
      }*/
-    /**
-     *
-     * @param args the command line arguments
-     */
+        /**
+         *
+         * @param args the command line arguments
+         */
     public static void main(String args[]) {
 
         Util.changeLoogAndFeel();
@@ -329,6 +349,7 @@ setLocationRelativeTo(null);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

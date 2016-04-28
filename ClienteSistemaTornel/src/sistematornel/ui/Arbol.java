@@ -47,6 +47,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 import utils.Utils;
 
 public class Arbol extends javax.swing.JFrame {
@@ -140,7 +141,7 @@ public class Arbol extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 if (fileSeleccionado != null && archivoSeleccionado != null && archivoArbolSeleccionado != null) {
-                    Accion accionDelete = new Accion();
+                    Accion accionDelete = new Accion(Singleton.getInstance().getPlanta());;
                     accionDelete.setAccion(2);
                     accionDelete.setSubAccion(1);
                     accionDelete.setObject(archivoSeleccionado);
@@ -273,7 +274,7 @@ public class Arbol extends javax.swing.JFrame {
                     if (archivo.isDirectory()) {
 
                         System.out.println("archivo: " + archivo.getRutaAbsoluta());
-                        Accion accion = new Accion();
+                        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
                         accion.setAccion(2);
 
                         accion.setObject(archivo);  
@@ -301,7 +302,7 @@ public class Arbol extends javax.swing.JFrame {
 
                             System.out.println("No existe un archivo con datos: " + archivo.getRutaAbsoluta());
 
-                            Accion accion = new Accion();
+                            Accion accion = new Accion(Singleton.getInstance().getPlanta());;
                             accion.setAccion(4);
                             accion.setObject(archivo);
                             Client c = new Client(IP, Util.PORT, 3, accion);
@@ -343,7 +344,7 @@ public class Arbol extends javax.swing.JFrame {
 
     public void descargarArchivo(Archivo archivo, File file) {
 
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(4);
         accion.setObject(archivo);
         Client c = new Client(IP, Util.PORT, 3, accion);
@@ -411,7 +412,7 @@ public class Arbol extends javax.swing.JFrame {
 
                     if (f.isDirectory()) {
 
-                        Accion accion = new Accion();
+                        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
                         accion.setAccion(2);
 
                         accion.setObject(f);

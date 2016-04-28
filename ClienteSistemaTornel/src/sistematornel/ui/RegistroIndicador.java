@@ -20,6 +20,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 
 /**
  *
@@ -51,7 +52,7 @@ public class RegistroIndicador extends javax.swing.JFrame {
             modelo.addColumn(columnas[i]);
         }
 
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(6);
 
         Client c = new Client(IP, Util.PORT, 3, accion);//192.168.1.72

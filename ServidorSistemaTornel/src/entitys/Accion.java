@@ -13,9 +13,14 @@ import java.io.Serializable;
  */
 public class Accion extends Object implements Serializable{
     
+    private String planta;
     private int accion;
     private int subAccion;
     private Object object;
+    
+    public Accion(String planta){
+        this.planta = planta;
+    }
 
     public int getAccion() {
         return accion;
@@ -33,7 +38,13 @@ public class Accion extends Object implements Serializable{
         this.subAccion = subAccion;
     }
     
+    public String getPlanta(){
+        return planta;
+    }
     
+    public void setPlanta(String planta){
+        this.planta = planta;
+    }
 
     public Object getObject() {
         return object;

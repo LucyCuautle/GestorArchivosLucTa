@@ -54,6 +54,7 @@ public class Server extends FileTransportBase {
     private boolean isStopped = false;
     private OnSincronizedListener onSincronizedListener;
     private String pathLink;
+    private String planta;
 
     public Server() {
     }
@@ -66,9 +67,9 @@ public class Server extends FileTransportBase {
     public Server(int port, String path) {
         this.port = port;
         this.path = path;
-        this.pathLink = path + File.separator + "link";
-        File f = new File(pathLink);
-        f.mkdirs();
+        this.pathLink = "link";
+        //File f = new File(pathLink);
+        //f.mkdirs();
     }
 
     public void setOnSincronizedListener(OnSincronizedListener onSincronizedListener) {
@@ -132,21 +133,22 @@ public class Server extends FileTransportBase {
             this.oos = new ObjectOutputStream(this.socket.getOutputStream());
             if (obj instanceof FileTransport) {
                 ft = (FileTransport) obj;
+                planta = ft.getPlanta();
 
                 ArrayList<UsuarioRegistro> usuariosDelProceso = buscarUsuariosProceso(ft.getProceso());
                 
                 if(usuariosDelProceso.size()>1){
                     for(UsuarioRegistro user : usuariosDelProceso){
-                        File directorio = new File(Utils.replaceSeparator(this.path + File.separator + Utils.getAnio() + File.separator + Utils.getMes() + File.separator + ft.getProceso()+File.separator+user.getIdUsuario()));
+                        File directorio = new File(Utils.replaceSeparator(this.path + File.separator + planta+File.separator+Utils.getAnio() + File.separator + Utils.getMes() + File.separator + ft.getProceso()+File.separator+user.getIdUsuario()));
                         directorio.mkdirs();
                     }
                     
-                    Utils.writeBytesToFile(ft.getFilearray(), Utils.replaceSeparator(this.path + File.separator + Utils.getAnio() + File.separator + Utils.getMes() + File.separator + ft.getProceso() + File.separator + ft.getNumeroTarjeta()+ File.separator +ft.getName()));
+                    Utils.writeBytesToFile(ft.getFilearray(), Utils.replaceSeparator(this.path + File.separator +  planta+File.separator+Utils.getAnio() + File.separator + Utils.getMes() + File.separator + ft.getProceso() + File.separator + ft.getNumeroTarjeta()+ File.separator +ft.getName()));
                    
                 }else{
-                    File directorio = new File(Utils.replaceSeparator(this.path + File.separator + Utils.getAnio() + File.separator + Utils.getMes() + File.separator + ft.getProceso()));
+                    File directorio = new File(Utils.replaceSeparator(this.path + File.separator +  planta+File.separator+Utils.getAnio() + File.separator + Utils.getMes() + File.separator + ft.getProceso()));
                     directorio.mkdirs();
-                    Utils.writeBytesToFile(ft.getFilearray(), Utils.replaceSeparator(this.path + File.separator + Utils.getAnio() + File.separator + Utils.getMes() + File.separator + ft.getProceso() + File.separator + ft.getName()));
+                    Utils.writeBytesToFile(ft.getFilearray(), Utils.replaceSeparator(this.path + File.separator +  planta+File.separator+Utils.getAnio() + File.separator + Utils.getMes() + File.separator + ft.getProceso() + File.separator + ft.getName()));
                 }
                 
                
@@ -166,6 +168,7 @@ public class Server extends FileTransportBase {
             } else if (obj instanceof UsuarioLogin) {
 
                 UsuarioLogin user = (UsuarioLogin) obj;
+                planta = user.getPlanta();
                 addMessage("Usuario: " + user.getNumeroTarjeta());
                 addMessage("Constrasenia: " + user.getContrasenia());
 
@@ -187,6 +190,7 @@ public class Server extends FileTransportBase {
 
             } else if (obj instanceof UsuarioRegistro) {
                 UsuarioRegistro user = (UsuarioRegistro) obj;
+                planta = user.getPlanta();
                 addMessage("Usuario: " + user.getNumeroTarjeta());
                 addMessage("Constrasenia: " + user.getContrasenia());
 
@@ -206,6 +210,8 @@ public class Server extends FileTransportBase {
                 }
             } else if (obj instanceof Accion) {
                 Accion accion = (Accion) obj;
+                
+                System.out.println("planta: "+accion.getPlanta());
                 //accion para obtener la matriz
                 if (accion.getAccion() == 1) {
 
@@ -372,13 +378,12 @@ public class Server extends FileTransportBase {
                 } else if (accion.getAccion() == 12) {
                     String anioMes = (String) accion.getObject();
                     String[] split = anioMes.split(",");
-                    File origen = new File(getPath() + File.separator + split[0] + File.separator + split[1]);
-                    File destino = new File(pathLink);
-
+                    File origen = new File(getPath() +File.separator+planta+File.separator + split[0] + File.separator + split[1]);   
+                    File destino = new File(getPath()+File.separator+planta+File.separator+pathLink);
+                    destino.mkdirs();
                     try {
-                      
                         Utils.copyFolder(origen, destino);
-                        Utils.cambiarNombre(pathLink);
+                        Utils.cambiarNombre(getPath()+File.separator+planta+File.separator+pathLink);
                         this.oos.writeObject("exito");
                     } catch (IOException e) {
                         this.oos.writeObject("fallo");
@@ -423,7 +428,7 @@ public class Server extends FileTransportBase {
     public UsuarioRegistro buscarUsuario(String usuario, String contrasenia) {
 
         addMessage("inicia conexion a la bd");
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         addMessage("se realizo la conexion");
         addMessage("usuario: " + usuario);
         addMessage("contrasenia: " + contrasenia);
@@ -465,7 +470,7 @@ public class Server extends FileTransportBase {
 
     public ArrayList<UsuarioRegistro> buscarUsuarios() {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         String sql = "select * from usuario";
@@ -503,7 +508,7 @@ public class Server extends FileTransportBase {
 
     public ArrayList<Proceso> buscarProcesosDeUsuario(int idUsuario) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
 
@@ -534,7 +539,7 @@ public class Server extends FileTransportBase {
 
     public boolean insertarUsuario(UsuarioRegistro usuarioRegistro) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -561,7 +566,7 @@ public class Server extends FileTransportBase {
 
     public boolean insertarProceso(Proceso proceso) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -586,7 +591,7 @@ public class Server extends FileTransportBase {
 
     public boolean insertarIndicador(Indicador indicador) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -614,7 +619,7 @@ public class Server extends FileTransportBase {
 
     public boolean actualizarDetalleIndicador(DetalleIndicador detalleIndicador) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -647,7 +652,7 @@ public class Server extends FileTransportBase {
 
     public boolean actualizarContrasenia(UsuarioRegistro usuarioRegistro) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -681,7 +686,7 @@ public class Server extends FileTransportBase {
 
     public boolean actualizarUsuario(UsuarioRegistro usuarioRegistro) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -720,7 +725,7 @@ public class Server extends FileTransportBase {
 
     public boolean actualizarProceso(Proceso proceso) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -756,7 +761,7 @@ public class Server extends FileTransportBase {
 
     public boolean actualizarIndicador(Indicador indicador) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -795,7 +800,7 @@ public class Server extends FileTransportBase {
 
     public boolean insertarProcesoIndicador(Proceso proceso, Indicador indicador) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -821,7 +826,7 @@ public class Server extends FileTransportBase {
 
     public boolean insertarUsuarioProceso(UsuarioRegistro usuarioRegistro, Proceso proceso) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -847,7 +852,7 @@ public class Server extends FileTransportBase {
     
     public boolean insertarUsuarioRol(UsuarioRegistro usuarioRegistro) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -874,7 +879,7 @@ public class Server extends FileTransportBase {
 
     public boolean insertarIndicadorProcesoUsuario(Indicador indicador, Proceso proceso, UsuarioRegistro usuarioRegistro) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -901,7 +906,7 @@ public class Server extends FileTransportBase {
     public ArrayList<Indicador> buscarIndicadores() {
 
         ArrayList<Indicador> indicadores = new ArrayList<>();
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         String sql = "select indicador_cat.id_indicador,nombre_proceso,nombre,apellido_p,numero_grafica,indicador_descripcion,eficiencia_eficacia,target,rol.id_rol from proceso,indicador_cat,usuario,indicador_proceso_usuario,rol,detalleur\n"
@@ -947,7 +952,7 @@ public class Server extends FileTransportBase {
 
         System.out.println("idIndicador: " + idIndicador);
         ArrayList<DetalleIndicador> detalleIndicadores = new ArrayList<>();
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         String sql = "select DetalleIndicador.id_detallemi,indicador_cat.id_indicador,dia,mes,anio,porcentaje from indicador_cat,DetalleIndicador\n"
@@ -1031,7 +1036,7 @@ public class Server extends FileTransportBase {
     public ArrayList<Proceso> buscarProcesos() {
 
         ArrayList<Proceso> procesos = new ArrayList<>();
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         String sql = "select * from proceso";
@@ -1063,7 +1068,7 @@ public class Server extends FileTransportBase {
     public ArrayList<Proceso> buscarProcesos(UsuarioRegistro usuarioRegistro) {
 
         ArrayList<Proceso> procesos = new ArrayList<>();
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         String sql = "select proceso.id_proceso,nombre_proceso from usuario,proceso,DetalleUP\n"
@@ -1098,7 +1103,7 @@ public class Server extends FileTransportBase {
     public ArrayList<UsuarioRegistro> buscarUsuariosProceso(String nombreProceso){
     
         ArrayList<UsuarioRegistro> usuarios = new ArrayList<>();
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         
         Statement st;
         ResultSet rs;
@@ -1140,7 +1145,7 @@ public class Server extends FileTransportBase {
     public ArrayList<Indicador> buscarIndicadores(Proceso proceso) {
 
         ArrayList<Indicador> indicadores = new ArrayList<>();
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         String sql = "select nombre_proceso,indicador_cat.id_indicador,numero_grafica,indicador_descripcion,eficiencia_eficacia,target from proceso,indicador_cat,proceso_indicador\n"
@@ -1180,7 +1185,7 @@ public class Server extends FileTransportBase {
     public ArrayList<Indicador> buscarIndicadores(UsuarioProceso usuarioProceso) {
 
         ArrayList<Indicador> indicadores = new ArrayList<>();
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         String sql = "select indicador_cat.id_indicador,nombre_proceso,numero_grafica,indicador_descripcion,eficiencia_eficacia,target from proceso,indicador_cat,usuario,indicador_proceso_usuario\n"
@@ -1223,7 +1228,7 @@ public class Server extends FileTransportBase {
     public ArrayList<Indicador> buscarIndicadoresCatalogo() {
 
         ArrayList<Indicador> indicadores = new ArrayList<>();
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         String sql = "select * from indicador_cat order by numero_grafica";
@@ -1258,7 +1263,7 @@ public class Server extends FileTransportBase {
 
     public Rol buscarRol(int idUsuario) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         String sql = "select Rol.id_rol,rol from Usuario,Rol,DetalleUR\n"
@@ -1296,7 +1301,7 @@ public class Server extends FileTransportBase {
     public Indicador buscarUltimoIndicador() {
 
         Indicador indicador = new Indicador();
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
         ResultSet rs;
         //ultimo registro mysql
@@ -1333,7 +1338,7 @@ public class Server extends FileTransportBase {
 
     public boolean procedimientoDetalleIndicador(Indicador indicador) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
 
         try {
             conexion.setAutoCommit(false);
@@ -1386,7 +1391,7 @@ public class Server extends FileTransportBase {
 
     public boolean borrarIndicador(Indicador indicador) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
 
         try {
             conexion.setAutoCommit(false);
@@ -1419,7 +1424,7 @@ public class Server extends FileTransportBase {
 
     public boolean borrarProceso(Proceso proceso) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
 
         try {
             conexion.setAutoCommit(false);
@@ -1452,7 +1457,7 @@ public class Server extends FileTransportBase {
 
     public boolean borrarUsuario(UsuarioRegistro usuario) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
 
         try {
             conexion.setAutoCommit(false);
@@ -1485,7 +1490,7 @@ public class Server extends FileTransportBase {
 
     public boolean borrarProcesoIndicador(ProcesoIndicador procesoIndicador) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -1519,7 +1524,7 @@ public class Server extends FileTransportBase {
 
     public boolean borrarIndicadorProcesoUsuario(IndicadorProcesoUsuario ipu) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -1560,7 +1565,7 @@ public class Server extends FileTransportBase {
 
     public boolean borrarIndicadorProcesoUsuario(UsuarioProceso usuarioProceso) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {
@@ -1597,7 +1602,7 @@ public class Server extends FileTransportBase {
 
     public boolean borrarUsuarioProceso(UsuarioProceso usuarioProceso) {
 
-        Connection conexion = ConexionBD.GetConnection();
+        Connection conexion = ConexionBD.GetConnection(planta);
         Statement st;
 
         try {

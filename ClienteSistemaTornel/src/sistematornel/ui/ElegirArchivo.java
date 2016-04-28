@@ -122,7 +122,7 @@ public class ElegirArchivo extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, "No puede eliminar este archivo");
                     } else {
 
-                        Accion accionDelete = new Accion();
+                        Accion accionDelete = new Accion(Singleton.getInstance().getPlanta());;
                         accionDelete.setAccion(2);
                         accionDelete.setSubAccion(1);
                         accionDelete.setObject(archivoSeleccionado);
@@ -236,11 +236,14 @@ public class ElegirArchivo extends javax.swing.JFrame {
                     if (archivo.isDirectory()) {
 
                         if (archivo.getNombre().equals("Tornel")
+                                || archivo.getNombre().equals("_p2")
+                                || archivo.getNombre().equals("_p4")
+                                || archivo.getNombre().equals("_p5")
                                 || Utils.isYear(archivo.getNombre())
                                 || Utils.isMonth(archivo.getNombre())
                                 || isProcess(archivo.getNombre())
                                 || isNumeroTarjeta(archivo.getNombre())) {
-                            Accion accion = new Accion();
+                            Accion accion = new Accion(Singleton.getInstance().getPlanta());;
                             accion.setAccion(2);
 
                             accion.setObject(archivo);
@@ -269,7 +272,7 @@ public class ElegirArchivo extends javax.swing.JFrame {
 
                             System.out.println("No existe un archivo con datos: " + archivo.getRutaAbsoluta());
 
-                            Accion accion = new Accion();
+                            Accion accion = new Accion(Singleton.getInstance().getPlanta());;
                             accion.setAccion(4);
                             accion.setObject(archivo);
                             Client c = new Client(IP, Util.PORT, 3, accion);
@@ -450,6 +453,9 @@ public class ElegirArchivo extends javax.swing.JFrame {
                 if (f.isDirectory()) {
 
                     if (f.getNombre().equals("Tornel")
+                            || f.getNombre().equals("_p2")
+                            || f.getNombre().equals("_p4")
+                            || f.getNombre().equals("_p5")
                             || Utils.isYear(f.getNombre())
                             || Utils.isMonth(f.getNombre())
                             || isProcess(f.getNombre())
@@ -470,7 +476,7 @@ public class ElegirArchivo extends javax.swing.JFrame {
 
                     if (f.isDirectory()) {
 
-                        Accion accion = new Accion();
+                        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
                         accion.setAccion(2);
 
                         accion.setObject(f);
@@ -514,7 +520,7 @@ public class ElegirArchivo extends javax.swing.JFrame {
 
     public void descargarArchivo(Archivo archivo, File file) {
 
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(4);
         accion.setObject(archivo);
         Client c = new Client(IP, Util.PORT, 3, accion);

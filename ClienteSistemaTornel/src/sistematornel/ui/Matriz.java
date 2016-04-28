@@ -112,7 +112,7 @@ public class Matriz extends javax.swing.JFrame implements Printable {
 
         }
 
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(1);
 
         Client c = new Client(IP, Util.PORT, 3, accion);//192.168.1.72
@@ -245,7 +245,7 @@ public class Matriz extends javax.swing.JFrame implements Printable {
                     if (Utils.validarNumeros(selectedData)) {
                         if (detalle != null && detalle.getPorcentaje() != null) {
 
-                            Accion accion = new Accion();
+                            Accion accion = new Accion(Singleton.getInstance().getPlanta());;
                             accion.setAccion(3);
                             detalle.setPorcentaje(selectedData);
                             accion.setObject(detalle);

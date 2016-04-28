@@ -18,6 +18,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import static sistematornel.ui.Login.IP;
+import utils.Singleton;
 
 /**
  *
@@ -52,7 +53,7 @@ public class VentanaAgregarIndicadorProceso extends javax.swing.JFrame {
         }
 
         
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(6);
         
         Client c = new Client(IP, Util.PORT, 3, accion);//192.168.1.72
@@ -92,7 +93,7 @@ public class VentanaAgregarIndicadorProceso extends javax.swing.JFrame {
         ProcesoIndicador procesoIndicador = new ProcesoIndicador();
         procesoIndicador.setProceso(proceso);
         procesoIndicador.setIndicador(indicador);
-        Accion accion = new Accion();
+        Accion accion = new Accion(Singleton.getInstance().getPlanta());;
         accion.setAccion(9);
         accion.setObject(procesoIndicador);
         Client c = new Client(IP, Util.PORT, 3, accion);//192.168.1.72
